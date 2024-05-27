@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Button CSS */
+.btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-sm {
+  width: 100px;
+  padding: 5px 10px;
+  font-size: 14px;
+  margin: 0px 10px;
+}
+.btn-small {
+  width: 50px;
+  font-size: 12px;
+  margin: 0px 10px;
+}
+
+.btn-med {
+  width: 100px;
+  font-size: 15px;
+}
+
+.btn-lg {
+  width: 140px;
+  font-size: 18px;
+  margin: 0px 10px;
+}
+
+tr td:first-child {
+  background-color: transparent;
+  width: fit-content;
+  font-size: 10px;
+  text-align: right;
+  padding-right: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 3px;
+  cursor: pointer;
+}
