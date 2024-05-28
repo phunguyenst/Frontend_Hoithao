@@ -147,7 +147,7 @@ function Event() {
         targetEvent={targetEvent}
         selectEvent={selectEvent}
         searchByName={searchByName}/>
-      <EventBox>
+      {/* <EventBox>
         <EventType>{
           (isCreate & isEdit) ? actionType[0] : isEdit ? actionType[2] : actionType[1]
         }</EventType>
@@ -191,7 +191,7 @@ function Event() {
             text={isEdit ? "Lưu" : "Chỉnh sửa"}
             buttonStyle="btn-primary" onClick={isEdit ? onSave : onEdit} />
         </Row>) : <></>}
-      </EventBox>
+      </EventBox> */}
     </div>
 
   )
@@ -201,19 +201,7 @@ const marginTop = {
   marginTop: '10px'
 }
 const EventBox = styled.div`
-  width: 70%;
-  height: 90%;
-  position: absolute;
-  right: 50%;
-  top: 50%;
-  transform: translate(69%, -50%);
-  border-radius: 15px;
-  border: none;
-  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-  background-color: #fff;
-  padding: 20px;
-  display: flex;
-  flex-flow: column;
+
 `;
 const EventName = styled.input`
     width: 100%;

@@ -1,51 +1,92 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useContext } from 'react'
 import styled from 'styled-components';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import AccountService from '../../services/account.service';
 import Password from './Password';
 import ContactList from './ContactList';
-
+import AuthContext from '../../context/AuthContext';
+import validateInfor from './validateInfo'; 
 
 const Profile = () => {
+    const { authEmail } = useContext(AuthContext);
+    const [touched, setTouched] = useState({});
+
     const [userInformation, setUserInformation] = useState({
         MaTaiKhoan: "",
         TenTaiKhoan: "",
         DiaChi: "",
         email: "",
-        SoDienThoai: ""
+        SoDienThoai: "",
+        password: "",
+        role: ""
     })
+    console.log("authEmail: ", authEmail);
+    console.log("userInformation: ", userInformation);
 
-    const handleChange = e => {
-        const { name, value } = e.target;
-        setUserInformation({
-            ...userInformation,
+    const fetchUserInformation = (e) => {
+        fetch(`http://localhost:3307/api/taikhoan/getone/${authEmail}`)
+        .then(response => response.json())
+        .then(data => {
+            const userData = data[0];
+            setUserInformation({
+                MaTaiKhoan: userData.MaTaiKhoan,
+                TenTaiKhoan: userData.TenTaiKhoan,
+                DiaChi: userData.DiaChi,
+                email: userData.email,
+                SoDienThoai: userData.SoDienThoai,
+                password: userData.password,
+                role: userData.role
+            })
+        })
+        .catch(e => console.log(e))
+    };
+    
+
+    useEffect(() => {
+        fetchUserInformation();
+    }, [authEmail]);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+    
+        setUserInformation(prevInfo => ({
+            ...prevInfo,
             [name]: value
+        }));
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const errors = validateInfor(userInformation);
+
+        if (Object.keys(errors).length > 0) {
+            alert("Có lỗi xảy ra. Vui lòng kiểm tra lại định dạng thông tin nhập vào.");
+            return;
+        }
+        fetch(`http://localhost:3307/api/taikhoan/update/${userInformation.MaTaiKhoan}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              
+                TenTaiKhoan: userInformation.TenTaiKhoan,
+                DiaChi: userInformation.DiaChi,
+                // email: userInformation.email,
+                SoDienThoai: userInformation.SoDienThoai,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Update successful:', data);
+            fetchUserInformation();
+            alert("Cập nhật thông tin thành công!");
+        })
+        .catch((error) => {
+            console.error('Error:', error);
         });
     };
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      AccountService.updateInfo({
-          fName: userInformation.fName,
-          lName: userInformation.lName,
-          email: userInformation.email,
-          phone: userInformation.phone,
-      }).then(response => {
-          console.log(response.data)
-      }).catch(e => console.log(e));
-    };
-
-    useEffect(() => {
-        AccountService.getInformation().then(response => {
-            setUserInformation({
-                DiaChi: response.data.DiaChi,
-                email: response.data.email,
-                SoDienThoai: response.data.SoDienThoai,
-                MaTaiKhoan: response.data.MaTaiKhoan,
-                TenTaiKhoan: response.data.TenTaiKhoan
-            })
-        }).catch(e => console.log(e))
-    }, []);
 
     
     return (
@@ -71,16 +112,17 @@ const Profile = () => {
                                 <Form.Label style={{ fontWeight: '500' }}>Tên tài khoản</Form.Label>
                                 <Form.Control style={{ marginBottom: '10px', backgroundColor: 'white' }}
                                     type="text"
+                                    name="TenTaiKhoan"
                                     value={userInformation.TenTaiKhoan}
-                                    name="username"
-                                    readOnly
-                                ></Form.Control>
+                                    onChange={handleChange}
+                                >
+                                </Form.Control>
                             </Form.Group>
                             <Form.Group controlId="fName">
                                 <Form.Label style={{ fontWeight: '500' }}>Địa chỉ</Form.Label>
                                 <Form.Control style={{ marginBottom: '10px' }}
                                     type="text"
-                                    name="fName"
+                                    name="DiaChi"
                                     value={userInformation.DiaChi}
                                     onChange={handleChange}
                                 ></Form.Control>
@@ -92,23 +134,24 @@ const Profile = () => {
                                     name="email"
                                     value={userInformation.email}
                                     onChange={handleChange}
+                                    readOnly
                                 ></Form.Control>
                             </Form.Group>
                             <Form.Group controlId="phone">
                                 <Form.Label style={{ fontWeight: '500' }}>Số điện thoại</Form.Label>
                                 <Form.Control style={{ marginBottom: '10px' }}
                                     type="text"
-                                    name="phone"
+                                    name="SoDienThoai"
                                     value={userInformation.SoDienThoai}
                                     onChange={handleChange}
                                 ></Form.Control>
                             </Form.Group>
-                            <Form.Group controlId="picture">
+                            {/* <Form.Group controlId="picture">
                                 <Form.Label style={{ fontWeight: '500' }}>Ảnh đại diện</Form.Label>
                                 <Form.Control
                                     type="file"
                                 ></Form.Control>
-                            </Form.Group>
+                            </Form.Group> */}
                             <Button type="submit" varient="primary" style={{ marginTop: '20px',backgroundColor:'#2da44e' }}
                                 onClick={handleSubmit}
                             >
@@ -123,15 +166,13 @@ const Profile = () => {
                             justifyContent: "center",
                         }}
                     >
-                        <Img src="layout.png" alt={userInformation.fName} />
+                        {/* <Img src="layout.png" alt={userInformation.fName} /> */}
                     </Col>
                 </Row>
             </div>
             <Password />
-            <SubHeading style={{marginTop:'100px'}}>Danh sách liên lạc</SubHeading>
             <hr style={{marginLeft:'220px', marginRight:'170px'}}></hr>
             <div style={{ marginLeft: "205px" }}>
-            <ContactList />
             </div>
         </>
     )

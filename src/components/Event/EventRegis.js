@@ -7,9 +7,10 @@ import { Modal, Button } from 'react-bootstrap';
 import { NotificationContext } from '../EventNotification/NotificationContext';
 
 
-function EventList(props) {
-    // const [isChose, setIsChose] = useState(0);
+function EventRegis() {
     const [events, setEvents] = useState([]);
+    const [registeredEvents, setRegisteredEvents] = useState([]);
+    const [dangkysukien, setDangkysukien] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [filteredEvents, setFilteredEvents] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -17,44 +18,25 @@ function EventList(props) {
     const { setNotifications } = useContext(NotificationContext);
 
     useEffect(() => {
-        axios.get('http://localhost:3307/api/sukien/findall')
+        axios.get('http://localhost:3307/api/dangkysukien/findall')
             .then(response => {
-                setEvents(response.data);
-                setFilteredEvents(response.data); 
+                setDangkysukien(response.data.dangkysukien);
             })
             .catch(error => {
                 console.error('There was an error!', error);
             });
     }, []);
-    //đăng kí sự kiện
-    const handleRegisterEvent = () => {
-        axios.post('http://localhost:3307/api/dangkysukien/registerEvent', { MaSuKien: selectedEvent.MaSuKien })
-            .then(response => {
-                console.log('Registered successfully!', response);
-                // alert("Đăng ký sự kiện thành công");
-                // const newNotification = {
-                //     id: Date.now(),
-                //     message: 'Đăng ký sự kiện thành công!',
-                //     responsed: false,
-                // };
 
-                setShowToast(true);
-                setTimeout(() => setShowToast(false), 3000); // hide the toast after 3 seconds
-                // re-fetch events
-                axios.get('http://localhost:3307/api/sukien/findall')
-                    .then(response => {
-                        setEvents(response.data);
-                        setFilteredEvents(response.data); 
-                    })
-                    .catch(error => {
-                        console.error('There was an error!', error);
-                    });
-                    handleCloseModal();
-            })
-            .catch(error => {
-                console.error('There was an error!', error);
-            });
-    };
+    // const handleRegisterEvent = () => {
+    //     axios.post('http://localhost:3307/api/dangkysukien/registerEvent', { MaSuKien: selectedEvent.MaSuKien })
+    //         .then(response => {
+    //             console.log('Registered successfully!', response);
+    //             setShowToast(true);
+    //         })
+    //         .catch(error => {
+    //             console.error('There was an error!', error);
+    //         });
+    // };
 
     //search event by name
     const handleSearch = (e) => {
@@ -88,51 +70,40 @@ function EventList(props) {
         return [day, month, year].join('/');
     }
     return (
-        
         <Container>
-            <h4 className="EventList-logo">Sự kiện</h4>
-            <Input className='form-control' placeholder="Tìm kiếm sự kiện"
-                 onKeyUp={handleSearch} />
+            <h4 className="EventList-logo">Sự kiện đã đăng ký</h4>
             <ScrollContainer>
                 <List>
-                    {filteredEvents.map((event) =>
+                    {dangkysukien.map((event) =>
                         <Item
-                            key={event.MaSuKien}
-                            className={props.targetEvent._id === event.MaSuKien ? 'active' : ''}
+                            key={event.MaDangKy}
                             onClick={() => handleItemClick(event)}>
                             <Name>{event.TenSuKien}</Name>
-                            <Text>Ngày {new Date(event.ThoiGianBatDau).toLocaleDateString()} lúc {new Date(event.ThoiGianBatDau).toLocaleTimeString()}</Text>
+                            <Text>Ngày đăng ký: {new Date(event.NgayDangKy).toLocaleDateString()}</Text>
+                            <Text>Trạng thái đăng ký: {event.TrangThaiDangKy}</Text>
                         </Item>)
                     }
                 </List>
-                {/* <AddEventButton>
-                    <BsFillPlusCircleFill className='icon' onClick={props.onCreate} />
-                </AddEventButton> */}
             </ScrollContainer>
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>{selectedEvent?.TenSuKien}</Modal.Title>
                 </Modal.Header>
-                <StyledModalBody>
+                <Modal.Body>
                     <p>Hình thức: {selectedEvent?.HinhThuc}</p>
                     <p>Địa điểm: {selectedEvent?.DiaDiem}</p>
-                    <p>Thời gian bắt đầu: {formatDate(selectedEvent?.ThoiGianBatDau)}</p>
-                    <p>Thời gian kết thúc: {formatDate(selectedEvent?.ThoiGianKetThuc)}</p>
                     <p>Số người tham dự: {selectedEvent?.SoNguoiThamDu}</p>
                     <p>Mô tả: {selectedEvent?.MoTa}</p>
-                </StyledModalBody>
+                    <p>Ngày đăng ký: {new Date(selectedEvent?.NgayDangKy).toLocaleDateString()}</p>
+                    <p>Trang thái đăng ký: {selectedEvent?.TrangThaiDangKy}</p>
+                </Modal.Body>
                 <Modal.Footer>
-                <Button variant="primary" onClick={handleRegisterEvent}>
-                    Đăng kí sự kiện
-                </Button>
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Đóng
                     </Button>
                 </Modal.Footer>
             </Modal>
-            {showToast && <Toast>Đăng kí sự kiện thành công!</Toast>}
         </Container>
-
     )
 }
 
@@ -183,11 +154,7 @@ const Name = styled.div`
     font-size: 15px;
 `
 const Text = styled.div`
-    font-size: 15px;
-`;
-const StyledModalBody = styled(Modal.Body)`
-    width: 800px; 
-    overflow-wrap: break-word;
+    font-size: 13px;
 `;
 const Input = styled.input`
     border-radius: 5px; 
@@ -214,4 +181,4 @@ const AddEventButton = styled.div`
         cursor: pointer;
     }
 `;
-export default EventList;
+export default EventRegis;
