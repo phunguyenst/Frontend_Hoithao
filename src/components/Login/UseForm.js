@@ -43,29 +43,6 @@ const UseForm = (callback, validate) => {
             });
         }
     }
-    
-    // const handleSubmit = e => {
-    //     e.preventDefault();
-    //     setErrors(validate(values));
-    //     setIsSubmitting(true);
-    //     if(values.TenTaiKhoan !=="" && values.email!=="" && values.password!=="" && values.password2!==""){
-    //         AuthService.signup({
-    //             TenTaiKhoan: values.TenTaiKhoan,
-    //             email: values.email,
-    //             password: values.password
-    //         }).then(response => {
-    //             alert('Đăng ký thành công!');
-    //             console.log(response.data);
-    //             if (response.data.signup === true) {
-    //                 // Handle successful signup here
-    //                 history.push('/');
-    //             }
-    //         }).catch(error => {   
-    //             console.error('Lỗi trong khi đăng ký:', error);
-    //             alert('Có lỗi xảy ra. Vui lòng thử lại.');
-    //         });
-    //     }
-    // }
 
     useEffect(
         () => {

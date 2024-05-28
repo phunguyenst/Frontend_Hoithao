@@ -10,6 +10,7 @@ import EventNotification from "./components/EventNotification/EventNotification"
 import ListUser from './components/Profile/ListUser';
 import { NotificationProvider } from './components/EventNotification/NotificationProvider';
 import EventRegis from "./components/Event/EventRegis";
+import PrivateRoute from './services/PrivateRoute';
 
 
 function App() {
@@ -23,12 +24,12 @@ function App() {
             <div>
               <Sidebar />
               <div className='container-fluid'>
-                <Route path='/home' exact component={EventCalendar} />
-                <Route path='/events' exact component={Event} />
-                <Route path='/eventregistered' exact component={EventRegis} />
-                <Route path='/friends' exact component={Profile}/>
-                <Route path='/notifications' exact component={EventNotification}/>
-                <Route path='/listuser' exact component={ListUser}/>
+                  <PrivateRoute path='/home' exact component={EventCalendar} />
+                  <PrivateRoute path='/events' exact component={Event} />
+                  <PrivateRoute path='/eventregistered' exact component={EventRegis} />
+                  <PrivateRoute path='/friends' exact component={Profile}/>
+                  <PrivateRoute path='/notifications' exact component={EventNotification}/>
+                  <PrivateRoute path='/listuser' exact component={ListUser}/>
               </div>
             </div>
           </Switch>

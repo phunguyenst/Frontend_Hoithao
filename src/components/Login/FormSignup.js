@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import { useHistory, Link } from 'react-router-dom';
 import AuthService from '../../services/auth.service';
 import axios from 'axios';
+import validateInfo from './validateInfo';
 
 const FormSignup = (props) => {
 
@@ -24,21 +25,31 @@ const FormSignup = (props) => {
         });
     };
 
+    useEffect(() => {
+        setErrors(validateInfo(values));
+    }, [values]);
+    
     const handleSignup = (e) => {
         e.preventDefault();
-        if (values.TenTaiKhoan !== "" && values.email !== "" && values.password !== "" && values.password2 !== "") {
-            axios.post('http://localhost:3307/signup', values)
-                .then(response => {
-                    console.log(response.data);
-                    alert('Đăng ký thành công!');
-                    history.push('/');
-                })
-                .catch(error => {   
-                    console.error('Lỗi trong khi đăng ký:', error);
-                    alert('Email đã được sử dụng!');
-                });
+        const errors = validateInfo(values);
+
+        if (Object.keys(errors).length > 0) {
+            alert("Có lỗi xảy ra. Vui lòng kiểm tra lại định dạng thông tin nhập vào.");
+            return;
         }
-    }
+
+        axios.post('http://localhost:3307/signup', values)
+            .then(response => {
+                console.log(response.data);
+                alert('Đăng ký thành công!');
+                history.push('/');
+            })
+            .catch(error => {   
+                console.error('Lỗi trong khi đăng ký:', error);
+                alert('Email đã được sử dụng!');
+            });
+    };
+    
     return (
         <FormContentRight>
             <Form>
