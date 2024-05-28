@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { useEffect, useState } from "react";
 
 const Detail = styled.div`
-	width: 50%;
+	width: 10%;
 	box-sizing: border-box;
 	border-right: 0.5px solid #1c2a3a;
 	padding-right: 20px;

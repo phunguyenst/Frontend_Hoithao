@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import { useHistory, Link } from 'react-router-dom';
 import AuthService from '../../services/auth.service';
 import axios from 'axios';
+import AuthContext from '../../context/AuthContext';
 
 const Login = (props) => {
-
+     const { setAuthEmail } = React.useContext(AuthContext);
     let history = useHistory();
 
     const [values, setValues] = useState({
@@ -44,6 +45,7 @@ const Login = (props) => {
                         // const loginToken = response.data.token;
                         // // Save the token to localStorage
                         // localStorage.setItem('loginToken', loginToken);
+                        setAuthEmail(values.email);
                         history.push('/home');
                     } else {
                         alert('Đăng nhập thất bại')

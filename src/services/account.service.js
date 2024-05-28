@@ -2,7 +2,7 @@ import http from '../http-common';
 
 class AccountService {
     changePassword(data) {
-        return http.post('/my/change-password', data);
+        return http.post('/api/taikhoan/changePasswordWithEmail', data);
     }
     updateInfo(data) {
         return http.put(`/api/taikhoan/update/=${data}`, data);
