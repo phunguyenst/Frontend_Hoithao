@@ -14,10 +14,7 @@ const Logo = styled.img`
   cursor: pointer;
   margin-left: -10px;
 `
-const handleLogout = () => {
-  localStorage.removeItem('authEmail');
-  // Redirect user to login page or perform other cleanup operations
-};
+
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   // const [isActive, setIsActive] = useState(0);
@@ -72,7 +69,6 @@ const Sidebar = () => {
           <Link
             className="sidebar-logout"
             to="/"
-            onClick={handleLogout}
           >
             <span className="sidebar-icon">
               <BiIcons.BiLogOut />

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import AccountService from '../../services/account.service';
-import axios from 'axios';
+
 
 const SubHeading = styled.h2`
     padding:20px auto;
@@ -13,29 +13,18 @@ const SubHeading = styled.h2`
 `
 
 const Password = () => {
+    const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (newPassword !== confirmPassword) {
-            console.log("Passwords do not match");
-            alert("Mật khẩu không khớp");
-            return;
-        }
-
-        const email = localStorage.getItem('authEmail');
-
-        axios.post('http://localhost:3307/api/taikhoan/changePasswordWithEmail', {
-            email: email,
+        AccountService.changePassword({
+            oldPassword: oldPassword,
             newPassword: newPassword
-        })
-        .then(response => {
+        }).then(response => {
             console.log(response.data)
-            alert("Đổi mật khẩu thành công");
-        })
-        .catch(error => console.log(error));
+        }).catch(error => console.log(error));
     }
 
     return (
@@ -48,7 +37,12 @@ const Password = () => {
                 }}>
                     <Col md={6}>
                         <Form>
-                            <Form.Group>
+                            <Form.Group controlId="oldPassword">
+                                <Form.Label style={{ fontWeight: '500' }}>Mật khẩu cũ</Form.Label>
+                                <Form.Control style={{ marginBottom: '10px' }}
+                                    type="password"
+                                    onChange={(e) => setOldPassword(e.target.value)}
+                                ></Form.Control>
 
                             </Form.Group><Form.Group controlId="newPassword">
                                 <Form.Label style={{ fontWeight: '500' }}>Mật khẩu mới</Form.Label>
