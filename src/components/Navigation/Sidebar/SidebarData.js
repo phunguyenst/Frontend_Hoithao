@@ -16,11 +16,6 @@ export const SidebarData = [
         icon: <BsIcons.BsFillCalendarEventFill />,
     },
     {
-        title:'Event Registered',
-        path: '/eventregistered',
-        icon: <BsIcons.BsFillCalendar2Fill />,
-    },
-    {
         title:'Friends',
         path: '/friends',
         icon: <FaIcons.FaUserFriends />,
@@ -29,10 +24,5 @@ export const SidebarData = [
         title:'Notifications',
         path: '/notifications',
         icon: <IoIcons.IoMdNotificationsOutline />,
-    },
-    {
-        title:'List User',
-        path: '/listuser',
-        icon: <FaIcons.FaUser />,
     },
 ]

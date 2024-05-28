@@ -1,25 +1,39 @@
 import styled from "styled-components"
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { ListGroup } from "react-bootstrap";
-import { NotificationContext } from './NotificationContext';
 import CloseButton from 'react-bootstrap/CloseButton';
 import Modal from 'react-bootstrap/Modal';
 import Button from "@restart/ui/esm/Button";
 import EventDataService from "../../services/event.service";
 
+
 export default function Notification(props) {
-    
+    const deleteNotification = (NotificationID) => {
+        handleClose();
+        return props.notifications.filter(({ id }) => id !== NotificationID)
+    }
+    const acceptInvitation = (notification) => {
+      notification.responsed = !notification.responsed
+      EventDataService.responseInvitation(notification._id, { res: 'Đồng ý'}).then(response => {
+        console.log(response.data);
+      }).catch(e => console.log(e));
+      props.setNotifications(props.notifications.map((noti) => {
+        if(noti._id === notification._id) {
+          return notification
+        }
+        return noti
+      }))
+    }
+
+    const declineInvitation = (notification) => {
+      EventDataService.responseInvitation(notification._id, { res: 'Từ chối'}).then(response => {
+        console.log(response.data);
+      }).catch(e => console.log(e));
+      props.setNotifications(props.notifications.filter(noti => noti._id !== notification._id))
+    }
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    const notifications = [
-        { message: "Thông báo 1: Cập nhật tính năng hiển thị sự kiện trên lịch trong tương lai" },
-        { message: "Thông báo 2: Về việc cập nhật tính năng cho phép người dùng tự tạo sự kiện trong năm tới" },
-        { message: "Thông báo 3: Đừng quên thay đổi thông tin cá nhân sau khi đăng ký tài khoản nhé 😎" },
-        // Thêm nhiều thông báo khác tại đây
-    ];
-
     return (
         <NotificationContainer>
             <h4 className="Notification-logo" style={{
@@ -32,16 +46,44 @@ export default function Notification(props) {
             </h4>
             <hr style={{ marginRight: '170px' }}></hr>
             <ListGroup defaultActiveKey="#link1">
-                {notifications.map((notification) =>
+                {(props.notifications).map((notification) =>
                     <Item>
                         <Contain>
-                        {notification.message}
+                            <Name>{`${notification.fName} ${notification.lName}`} đã mời bạn vào sự kiện "{notification.eventName}"</Name>
+                            <Text>Ngày diễn ra sự kiện {notification.startDay} lúc {notification.startTime}</Text>
                         </Contain>
-                    </Item>
-                )}
+                        {(!notification.responsed) ? (
+                            <ButtonContainer>
+                                <button type="button" class="btn btn-primary" onClick={() => acceptInvitation(notification)}>Đồng ý</button>
+                                <button type="button" class="btn btn-danger" onClick={() => declineInvitation(notification)}>Từ chối</button>
+                            </ButtonContainer>
+                        ) : (
+                            <>
+                            </>
+                        )
+                        }
+                        {/* <RemoveButton>
+                            <CloseButton onClick={handleShow} />
+                            <Modal show={show} onHide={handleClose}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Xác nhận</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>Bạn có chắc chắn muốn xóa thông báo này ? Hành động này không thể hoàn tác.</Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={handleClose}>
+                                        Trở lại
+                                    </Button>
+                                    <Button variant="primary" onClick={() => deleteNotification(notification.id)}>
+                                        Xóa
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                        </RemoveButton> */}
+                    </Item>)
+                }
             </ListGroup>
         </NotificationContainer>
-    );
+    )
 }
 
 
